@@ -1,3 +1,5 @@
+# it ain't pretty but it works ¯\_(ツ)_/¯ #
+
 import numpy as np
 from numpy.core.fromnumeric import shape
 import copy
