@@ -60,18 +60,66 @@ while not arrays_equal:
                     if colIndex < 0 or colIndex > np.shape(input)[1]-1:
                         continue
 
+                    """
                     if old_risklevels[rowIndex,colIndex] < 0:
                         # don't compare to -1 and -2
                         continue
+                    """
 
-                    if input[rowIndex,colIndex] != 9 and input[rowIndex,colIndex] > input[iRow,jCol]:
-                        new_risklevels[rowIndex,colIndex] = -1
+                    if input[rowIndex,colIndex] > input[iRow,jCol]:
+                        if input[rowIndex,colIndex] != 9:
+                            new_risklevels[rowIndex,colIndex] = -1
 
-            if old_risklevels[iRow,jCol] == -1:
-                new_risklevels[iRow,jCol] = -2
+            #if old_risklevels[iRow,jCol] == -1:
+            #    new_risklevels[iRow,jCol] = -2
 
     arrays_equal = np.array_equal(old_risklevels,new_risklevels)
-    old_risklevels = new_risklevels
+    old_risklevels = copy.deepcopy(new_risklevels)
 
-x = 5
+basin_id = -3
+id_risklevels = copy.deepcopy(new_risklevels)
+prev_id_risklevels = copy.deepcopy(id_risklevels)
+all_idd = False
+while not all_idd:
+    for iRow in range(np.shape(input)[0]):
+        for jCol in range(np.shape(input)[1]):
 
+            if  id_risklevels[iRow,jCol] >= 0:
+                # not part of basin
+                continue
+            
+            neighbour_vals = []
+
+            for rowOffset in range(-1,2):
+                for colOffset in range(-1,2):
+
+                    if (rowOffset == colOffset) or (rowOffset == -colOffset):
+                        continue
+
+                    rowIndex = iRow+rowOffset
+                    if rowIndex < 0 or rowIndex > np.shape(input)[0]-1:
+                        continue
+
+                    colIndex = jCol+colOffset
+                    if colIndex < 0 or colIndex > np.shape(input)[1]-1:
+                        continue
+
+                    neighbour_vals.append(id_risklevels[rowIndex,colIndex])
+            
+            min_val = min(neighbour_vals)
+            if min_val >= -2:
+                # no ID yet assigned to this basin
+                id_risklevels[iRow,jCol] = basin_id
+                if basin_id == -19:
+                    x = 5
+                basin_id -= 1
+            else:
+                id_risklevels[iRow,jCol] = min_val
+
+    all_idd = np.array_equal(prev_id_risklevels,id_risklevels)
+    prev_id_risklevels = copy.deepcopy(id_risklevels)
+
+(unique, counts) = np.unique(id_risklevels, return_counts=True)
+frequencies = np.asarray((unique, counts)).T
+
+print(np.prod(np.flip(np.sort(counts))[1:4]))
