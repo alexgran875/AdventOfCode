@@ -6,36 +6,62 @@ with open('input.txt') as f:
     input = f.readlines()
 
 template = input[0].replace("\n","")
-pattern_to_idx = {}
-idx_to_element = [0]*100
-list_unique_elements = []
+match_to_new_patterns = {}
+pattern_count = {}
+element_count = {}
+for i in range(len(template)):
+    if i == len(template) - 1:
+        break
+    key = template[i]+template[i+1]
+    if key not in pattern_count:
+        pattern_count[key] = 1
+    else:
+        pattern_count[key] += 1
+
+    if template[i] not in element_count:
+        element_count[template[i]] = 1
+    else:
+        element_count[template[i]] += 1
+
+if template[i] not in element_count:
+    element_count[template[i]] = 1
+else:
+    element_count[template[i]] += 1
+
 for i,line in enumerate(input):
     if i <= 1:
         continue
-    for element in [line[0],line[1],line[6]]:
-        if element not in list_unique_elements:
-            list_unique_elements.append(element)
-    pattern = line[0]+line[1]
-    pattern_to_idx[pattern] = str(len(idx_to_element))
-    idx_to_element.append(line[6])
 
-def insert_into_string(string, insertion, idx):
-    return string[:idx+1] + str(insertion) + string[idx+1:]
+    pattern1 = line[0] + line[6]
+    pattern2 = line[6] + line[1]
+    match = line[0] + line[1]
+    match_to_new_patterns[match] = [pattern1, pattern2]
 
+
+new_pattern_count = copy.deepcopy(pattern_count)
 for time_step in range(40):
-    idx_inserted = []
-    for key in pattern_to_idx.keys():
-        while template.count(key) > 0:
-            template = insert_into_string(template,pattern_to_idx[key],template.index(key))
-            idx_inserted.append(int(pattern_to_idx[key]))
-    for i in range(len(idx_inserted)):
-        template = template.replace(str(idx_inserted[i]),idx_to_element[idx_inserted[i]])
-    print(time_step)
+    for match in match_to_new_patterns.keys():
+        if match in pattern_count:
+            patterns_to_add_to = match_to_new_patterns[match]
+            num_matches = pattern_count[match]
+            if patterns_to_add_to[0][1] not in element_count:
+                element_count[patterns_to_add_to[0][1]] = num_matches
+            else:
+                element_count[patterns_to_add_to[0][1]] += num_matches
+            new_pattern_count[match] -= pattern_count[match]
+            if patterns_to_add_to[0] in new_pattern_count:
+                new_pattern_count[patterns_to_add_to[0]] += num_matches
+            else:
+                new_pattern_count[patterns_to_add_to[0]] = num_matches
+            
+            if patterns_to_add_to[1] in new_pattern_count:
+                new_pattern_count[patterns_to_add_to[1]] += num_matches
+            else:
+                new_pattern_count[patterns_to_add_to[1]] = num_matches
 
-count = []
-for element in list_unique_elements:
-    count.append(template.count(element)) 
-print(f'{max(count)-min(count)}')
 
-x = 5
+    pattern_count = copy.deepcopy(new_pattern_count)
+
+
+print(f'{max(element_count.values())-min(element_count.values())}')
 
