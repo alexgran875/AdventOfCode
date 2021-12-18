@@ -1,9 +1,8 @@
-import numpy
 import copy
 import math
-import numpy as np
-from numpy.core.fromnumeric import shape
-from numpy.core.numeric import Inf, Infinity
+#import numpy as np
+#from numpy.core.fromnumeric import shape
+#from numpy.core.numeric import Inf, Infinity
 import ast
 
 with open('input.txt') as f:
@@ -101,37 +100,46 @@ def explode_all(summarized):
         #print(summarized)
 
 def calc_magnitude(recursed_number):
-    while len(recursed_number) > 1:
-        for i in range(len(recursed_number)):
-            if isinstance(recursed_number[i],int):
+    for i in range(len(recursed_number)):
+        if isinstance(recursed_number[i],int): 
+            try:
                 return 3*recursed_number[0] + 2*recursed_number[1]
-            else:
-                rv = calc_magnitude(recursed_number[i])
-                if isinstance(rv, int):
-                    recursed_number[i] = rv
+            except TypeError:
+                continue
+        else:
+            rv = calc_magnitude(recursed_number[i])
+            if rv is not None:
+                recursed_number[i] = rv
 
-#def get_magnitude(number1, number2):
 
-summarized = input_listed[0]
-for i in range(1,len(input_listed)):
-    summarized = add_snailfish_numbers(summarized,input_listed[i])
-    print(summarized)
-    x = 5
-
+def get_magnitude(number1, number2):
+    summarized = add_snailfish_numbers(number1,number2)
+    #print(summarized)
     while True:
         pre_reduction = copy.deepcopy(summarized)
         explode_all(summarized)
-        print(summarized)
+        #print(summarized)
         split(input,summarized,0)
-        print(summarized)
+        #print(summarized)
         if pre_reduction == summarized:
             break
+    while not isinstance(summarized[0],int):
+        calc_magnitude(summarized)
+    return summarized[0]*3 + summarized[1]*2
 
-        x = 5
+#print(get_magnitude(number1=[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]], number2=[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]))
 
-print(summarized)
+highest_magnitude = 0
+max_it = len(input_listed)**2
+total_it = 0
+for i in range(len(input_listed)):
+    for j in range(len(input_listed)):
+        if i == j:
+            continue
+        rv = get_magnitude(input_listed[i],input_listed[j])
+        if rv > highest_magnitude:
+            highest_magnitude = rv
+        total_it += 1
+        print(f'{(total_it)/max_it}')
 
-calc_magnitude(summarized)
-print(summarized[0]*3 + summarized[1]*2)
-
-
+print(highest_magnitude)
