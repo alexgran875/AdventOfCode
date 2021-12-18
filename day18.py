@@ -62,9 +62,25 @@ def explode(whole_number,recursed_number,depth):
                     explosion[0] = send_explosion_recusrively(recursed_number[i-1],explosion[0],"left")
             return explosion
 
+def split(whole_number,recursed_number,depth):
+    if not isinstance(recursed_number,int):
+        for i in range(len(recursed_number)):
+            if isinstance(recursed_number[i],int) and recursed_number[i] >= 10:
+                recursed_number[i] = [math.floor(recursed_number[i]/2),math.ceil(recursed_number[i]/2)]
+                return "done" # only do one split
+            else:
+                if split(whole_number,recursed_number[i],depth+1) == "done":
+                    return
+
+
+# while exploding until no change
+# while splitting until no change
+
+
 #temp = add_snailfish_numbers(input_listed[0],input_listed[1])
 #recursive(input_listed)
-explode(input_listed,input_listed,-1)
+#explode(input_listed,input_listed,-1)
+split(input_listed,input_listed,-1)
 temp = str(input_listed[0])
 print(temp)
 
