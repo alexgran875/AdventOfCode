@@ -28,14 +28,16 @@ def send_explosion_recusrively(recursed_number,explosion,dir):
                 recursed_number[i] += explosion
                 return 0
             else:
-                send_explosion_recusrively(recursed_number[i],explosion,dir)
+                if send_explosion_recusrively(recursed_number[i],explosion,dir) == 0:
+                    return 0
     elif dir=="left":
         for i in list(reversed(list(range(len(recursed_number))))):
             if isinstance(recursed_number[i],int):
                 recursed_number[i] += explosion
                 return 0
             else:
-                send_explosion_recusrively(recursed_number[i],explosion,dir)
+                if send_explosion_recusrively(recursed_number[i],explosion,dir) == 0:
+                    return 0
 
 
 def explode(whole_number,recursed_number,depth):
@@ -70,7 +72,7 @@ def split(whole_number,recursed_number,depth):
                 return "done" # only do one split
             else:
                 if split(whole_number,recursed_number[i],depth+1) == "done":
-                    return
+                    return "done"
 
 
 # while exploding until no change
@@ -79,9 +81,37 @@ def split(whole_number,recursed_number,depth):
 
 #temp = add_snailfish_numbers(input_listed[0],input_listed[1])
 #recursive(input_listed)
-#explode(input_listed,input_listed,-1)
-split(input_listed,input_listed,-1)
-temp = str(input_listed[0])
-print(temp)
+#split(input_listed,input_listed,-1)
+#explode(input,input_listed,-1)
+#temp = str(input_listed[0])
+#print(temp)
 
-x = 5
+def explode_all(summarized):
+    while True:
+        # keep exploding
+        pre_explode = copy.deepcopy(summarized)
+        explode(input,summarized,0)
+        if pre_explode == summarized:
+            break
+        #print(summarized)
+
+summarized = input_listed[0]
+for i in range(1,len(input_listed)):
+    summarized = add_snailfish_numbers(summarized,input_listed[i])
+    print(summarized)
+
+    while True:
+        pre_reduction = copy.deepcopy(summarized)
+        explode_all(summarized)
+        print(summarized)
+        split(input,summarized,0)
+        print(summarized)
+        if pre_reduction == summarized:
+            break
+
+        x = 5
+
+print(summarized)
+
+
+
