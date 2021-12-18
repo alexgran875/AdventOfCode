@@ -21,16 +21,21 @@ def recursive(number):
     else:
         x = 5
 
-def send_explosion_recusrively(recursed_number,explosion):
-
-
-
-
-    if not isinstance(recursed_number,int):
+def send_explosion_recusrively(recursed_number,explosion,dir):
+    if dir=="right":
         for i in range(len(recursed_number)):
-            recursive(recursed_number[i])
-    else:
-        x = 5
+            if isinstance(recursed_number[i],int):
+                recursed_number[i] += explosion
+                return 0
+            else:
+                send_explosion_recusrively(recursed_number[i],explosion,dir)
+    elif dir=="left":
+        for i in list(reversed(list(range(len(recursed_number))))):
+            if isinstance(recursed_number[i],int):
+                recursed_number[i] += explosion
+                return 0
+            else:
+                send_explosion_recusrively(recursed_number[i],explosion,dir)
 
 
 def explode(whole_number,recursed_number,depth):
@@ -48,18 +53,19 @@ def explode(whole_number,recursed_number,depth):
                     recursed_number[i+1] += explosion[1]
                     explosion[1] = 0
                 else:
-                    pass
+                    explosion[1] = send_explosion_recusrively(recursed_number[i+1],explosion[1],"right")
             if explosion[0] and i-1 >= 0:
                 if isinstance(recursed_number[i-1],int):    
                     recursed_number[i-1] += explosion[0]
                     explosion[0] = 0
                 else:
-                    pass
+                    explosion[0] = send_explosion_recusrively(recursed_number[i-1],explosion[0],"left")
             return explosion
 
 #temp = add_snailfish_numbers(input_listed[0],input_listed[1])
 #recursive(input_listed)
 explode(input_listed,input_listed,-1)
-temp = str(input_listed)
+temp = str(input_listed[0])
+print(temp)
 
 x = 5
