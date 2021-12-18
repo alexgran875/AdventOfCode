@@ -42,14 +42,19 @@ def send_explosion_recusrively(recursed_number,explosion,dir):
 
 def explode(whole_number,recursed_number,depth):
     if depth == 4 and not isinstance(recursed_number,int) and len(recursed_number) == 2:
-        return recursed_number
+        return [recursed_number, "fuu"]
     if not isinstance(recursed_number,int):
         for i in range(len(recursed_number)):
             explosion = explode(whole_number,recursed_number[i],depth+1)
             if explosion is None:
                 continue
-            if explosion[0] and explosion[1]:
-                recursed_number[i] = 0
+            else:
+                if explosion[1] == "fuu":
+                    recursed_number[i] = 0
+                    explosion = explosion[0]
+                else:
+                    if explosion[0] and explosion[1]:
+                        recursed_number[i] = 0
             if explosion[1] and i+1 < len(recursed_number):
                 if isinstance(recursed_number[i+1],int):
                     recursed_number[i+1] += explosion[1]
@@ -99,6 +104,7 @@ summarized = input_listed[0]
 for i in range(1,len(input_listed)):
     summarized = add_snailfish_numbers(summarized,input_listed[i])
     print(summarized)
+    x = 5
 
     while True:
         pre_reduction = copy.deepcopy(summarized)
