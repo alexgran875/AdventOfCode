@@ -100,6 +100,18 @@ def explode_all(summarized):
             break
         #print(summarized)
 
+def calc_magnitude(recursed_number):
+    while len(recursed_number) > 1:
+        for i in range(len(recursed_number)):
+            if isinstance(recursed_number[i],int):
+                return 3*recursed_number[0] + 2*recursed_number[1]
+            else:
+                rv = calc_magnitude(recursed_number[i])
+                if isinstance(rv, int):
+                    recursed_number[i] = rv
+
+#def get_magnitude(number1, number2):
+
 summarized = input_listed[0]
 for i in range(1,len(input_listed)):
     summarized = add_snailfish_numbers(summarized,input_listed[i])
@@ -119,5 +131,7 @@ for i in range(1,len(input_listed)):
 
 print(summarized)
 
+calc_magnitude(summarized)
+print(summarized[0]*3 + summarized[1]*2)
 
 
