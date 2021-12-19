@@ -123,11 +123,35 @@ def get_magnitude(number1, number2):
         #print(summarized)
         if pre_reduction == summarized:
             break
-    while not isinstance(summarized[0],int):
+    while True:
         calc_magnitude(summarized)
-    return summarized[0]*3 + summarized[1]*2
+        try:
+            magnitude = summarized[0]*3 + summarized[1]*2
+            if not isinstance(magnitude, int):
+                continue
+            else:
+                break
+        except TypeError:
+            continue
+    return magnitude
 
 #print(get_magnitude(number1=[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]], number2=[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]))
+
+"""
+summarized = input_listed[0]
+for i in range(1,len(input_listed)):
+    summarized = add_snailfish_numbers(summarized,input_listed[i])
+    while True:
+        pre_reduction = copy.deepcopy(summarized)
+        explode_all(summarized)
+        split(input,summarized,0)
+        if pre_reduction == summarized:
+            break
+while not isinstance(summarized[0],int):
+    calc_magnitude(summarized)
+magnitude = summarized[0]*3 + summarized[1]*2
+print(magnitude)
+"""
 
 highest_magnitude = 0
 max_it = len(input_listed)**2
@@ -136,7 +160,7 @@ for i in range(len(input_listed)):
     for j in range(len(input_listed)):
         if i == j:
             continue
-        rv = get_magnitude(input_listed[i],input_listed[j])
+        rv = get_magnitude(copy.deepcopy(input_listed[i]),copy.deepcopy(input_listed[j]))
         if rv > highest_magnitude:
             highest_magnitude = rv
         total_it += 1
