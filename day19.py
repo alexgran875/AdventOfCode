@@ -107,7 +107,7 @@ def apply_transformation(mult, placement, offset, beacons):
     return transformed_beacons
 
 
-
+scanner_locations = [np.array([0,0,0])]
 origo = copy.deepcopy(sensor_readings[0])
 sensor_readings.pop(0)
 while len(sensor_readings) > 0:
@@ -126,6 +126,8 @@ while len(sensor_readings) > 0:
             other_flipped = np.array([ other_beacon[placement[0]], other_beacon[placement[1]], other_beacon[placement[2]] ])
             offset = origin_beacon - other_flipped
 
+            scanner_locations.append(offset)
+
             #new_beacons_wrt_origo = apply_transformation(mult, placement, offset, np.array(sensor_readings[sensor])[matching_beacon2])
             new_beacons_wrt_origo = apply_transformation(mult, placement, offset, np.array(sensor_readings[sensor]))
             for i in range(new_beacons_wrt_origo.shape[0]):
@@ -137,5 +139,14 @@ while len(sensor_readings) > 0:
             print(len(sensor_readings))
             break
 
-print(len(origo))
+print(len(origo)) # num beacons: 457
+
+biggest_m_dist = -Infinity
+for iRow in range(len(scanner_locations)):
+    manhattan_distance = np.abs(np.array(get_dist_vectors(scanner_locations[iRow], scanner_locations)))
+    manhattan_distance = np.max(np.sum(np.abs(manhattan_distance), axis=1))
+    if manhattan_distance > biggest_m_dist:
+        biggest_m_dist = manhattan_distance
+
+print(biggest_m_dist) # largest manhattan distance between scanners: 13243
 
