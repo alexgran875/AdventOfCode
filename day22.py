@@ -270,7 +270,8 @@ for line in input:
             overlapping_cube = cube.get_overlapping_cube(new_cube)
             if overlapping_cube is None:
                 continue
-            cubes.append(overlapping_cube)
+            if overlapping_cube.on:
+                cubes.append(overlapping_cube)
 
             new_cubes.remove(new_cube)
             new_cubes.extend(new_cube.subtract_cube(overlapping_cube))
@@ -353,7 +354,8 @@ for line in input:
         if not has_overlaps:
             # new_cube had no overlaps, add it
             new_cubes.remove(new_cube)
-            cubes.append(new_cube)
+            if new_cube.on:
+                cubes.append(new_cube)
 
     #cubes.extend(no_additional_checking_needed)
     
