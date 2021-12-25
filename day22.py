@@ -86,18 +86,29 @@ class Cube():
         return True
 
     def subtract_cube(self, overlapping_cube):
+        if self.equal_to(overlapping_cube):
+            return []
         cubes = []
-        x_pairings = [(min(self.x_min,overlapping_cube.x_min),overlapping_cube.x_min-1),
-        (min(self.x_max,overlapping_cube.x_max)+1,self.x_max),
-        (overlapping_cube.x_min,overlapping_cube.x_max)]
+        x_pairings = [(self.x_min,overlapping_cube.x_min-1),
+        (overlapping_cube.x_min,overlapping_cube.x_max),
+        (overlapping_cube.x_max+1,self.x_max)]
 
-        y_pairings = [(min(self.y_min,overlapping_cube.y_min),overlapping_cube.y_min-1),
-        (min(self.y_max,overlapping_cube.y_max)+1,self.y_max),
-        (overlapping_cube.y_min,overlapping_cube.y_max)]
+        y_pairings = [(self.y_min,overlapping_cube.y_min-1),
+        (overlapping_cube.y_min,overlapping_cube.y_max),
+        (overlapping_cube.y_max+1,self.y_max)]
 
-        z_pairings = [(min(self.z_min,overlapping_cube.z_min),overlapping_cube.z_min-1),
-        (min(self.z_max,overlapping_cube.z_max)+1,self.z_max),
-        (overlapping_cube.z_min,overlapping_cube.z_max)]
+        z_pairings = [(self.z_min,overlapping_cube.z_min-1),
+        (overlapping_cube.z_min,overlapping_cube.z_max),
+        (overlapping_cube.z_max+1,self.z_max)]
+
+        """
+        x_pairings = [(og_rect[0],overlap[0]-1),
+                (overlap[0],overlap[1]),
+                (overlap[1]+1,og_rect[1])]
+        y_pairings = [(og_rect[2],overlap[2]-1),
+                (overlap[2],overlap[3]),
+                (overlap[3]+1,og_rect[3])]
+        """
 
         copied_pairings = copy.deepcopy(x_pairings)
         for x_pair in x_pairings:
@@ -116,7 +127,7 @@ class Cube():
             if z_pair[0] > z_pair[1]:
                 copied_pairings.remove(z_pair)
         z_pairings = copy.deepcopy(copied_pairings)
-                    
+
         for x_pair in x_pairings:
             for y_pair in y_pairings:
                 for z_pair in z_pairings:
@@ -212,6 +223,7 @@ for line in input:
         on = False
 
     new_cubes = [Cube(x_min, x_max, y_min, y_max, z_min, z_max, on, i)]
+    """
     prev_len = len(new_cubes)
     new_len = prev_len
     while True:
@@ -224,7 +236,7 @@ for line in input:
             break
         else:
             prev_len = new_len 
-
+    """
     # AIM: cubes only contains cubes with no overlap!
     # 0: x <= 0, y <= 0, z <= 0
     # BINARY
@@ -244,22 +256,58 @@ for line in input:
     for tt in new_cubes:
         new_cubes_volume += tt.get_volume() 
 
-    no_additional_checking_needed = []
+    #no_additional_checking_needed = []
     while len(new_cubes) > 0:
+        has_overlaps = False
         new_cube = new_cubes[-1]
+        """
         if new_cube.get_volume() == 0:
             new_cubes.remove(new_cube)
             continue
-        has_overlaps = False
-        same_cube = False
+        """
+        #same_cube = False
         for cube in cubes:
+            overlapping_cube = cube.get_overlapping_cube(new_cube)
+            if overlapping_cube is None:
+                continue
+            cubes.append(overlapping_cube)
+
+            new_cubes.remove(new_cube)
+            new_cubes.extend(new_cube.subtract_cube(overlapping_cube))
+
+            cubes.remove(cube)
+            cubes.extend(cube.subtract_cube(overlapping_cube))
+            has_overlaps = True
+            break
+            """
             if new_cube.equal_to(cube):
                 same_cube = True
                 break
             overlapping_cube = cube.get_overlapping_cube(new_cube)
+
             if overlapping_cube is not None:
                 has_overlaps = True
                 part_cubes_1 = cube.subtract_cube(overlapping_cube)
+                
+                if len(part_cubes_1) == 0:
+                    # cube = overlapping_cube
+                    cubes.remove(cube)
+                    if overlapping_cube.addition_order > cube.addition_order:
+                        if overlapping_cube.on:
+                            no_additional_checking_needed.append(overlapping_cube)
+                    else:
+                        if cube.on:
+                            no_additional_checking_needed.append(cube)
+                    
+                    part_cubes_2 = new_cube.subtract_cube(overlapping_cube)
+                    if len(part_cubes_2) > 0:
+                        # it will only contain 0 cubes if it is the overlapping cube
+                        new_cubes.extend(part_cubes_2)
+                    else:
+                        x = 5
+                    new_cubes.remove(new_cube)
+                    break
+
                 part_cubes_2 = new_cube.subtract_cube(overlapping_cube)
 
                 delta_volume = 2*overlapping_cube.get_volume()
@@ -276,7 +324,9 @@ for line in input:
                     no_additional_checking_needed.append(overlapping_cube)
 
                 new_cubes.remove(new_cube)
-                new_cubes.extend(part_cubes_2)
+                if len(part_cubes_2) > 0:
+                    # it will only contain 1 cube if it is the overlapping cube
+                    new_cubes.extend(part_cubes_2)
 
                 confirmed_unoverlapping_volume = 0
                 new_cubes_volume2 = 0
@@ -298,17 +348,14 @@ for line in input:
                 # TODO: only larger than instead of equal?
                 cube.on = new_cube.on
                 cube.addition_order = new_cube.addition_order
-            new_cubes.remove(new_cube)  
-        elif not has_overlaps:
+            new_cubes.remove(new_cube)
+        """  
+        if not has_overlaps:
             # new_cube had no overlaps, add it
             new_cubes.remove(new_cube)
-            if new_cube.on:
-                no_additional_checking_needed.append(new_cube)
-            else:
-                x = 5
+            cubes.append(new_cube)
 
-
-    cubes.extend(no_additional_checking_needed)
+    #cubes.extend(no_additional_checking_needed)
     
     """
     for cube in cubes:
@@ -343,8 +390,7 @@ print(n_on)
 print(retired_algo(input))
 """
 for i in range(len(cubes)):
-    if cubes[i].get_volume() <= 1824:
+    if cubes[i].get_volume() <= 2235:
         print(f'{i}:{cubes[i].get_volume()}')
-
-x = 5
 """
+x = 5
