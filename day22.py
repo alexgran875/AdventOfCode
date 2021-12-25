@@ -1,8 +1,4 @@
 import copy
-import math
-import numpy as np
-from numpy.core.fromnumeric import partition, shape
-from numpy.core.numeric import Inf, Infinity
 
 with open('input.txt') as f:
     input = f.readlines()
@@ -389,7 +385,7 @@ for cube in cubes:
     n_on += cube.get_volume()
 
 print(n_on)
-print(retired_algo(input))
+#print(retired_algo(input))
 """
 for i in range(len(cubes)):
     if cubes[i].get_volume() <= 2235:
