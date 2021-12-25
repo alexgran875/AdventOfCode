@@ -43,6 +43,7 @@ class Cube():
         self.volume = None
 
     def get_volume(self):
+        # right now actually counts the number of points within, not just the volume
         if self.volume is not None:
             return self.volume
         self.volume = (abs(self.x_max-self.x_min)+1)*(abs(self.y_max-self.y_min)+1)*(abs(self.z_max-self.z_min)+1)
@@ -150,29 +151,45 @@ class Cube():
 
         return cubes
 
+    def split_cube_across_borders(self):
+        if self.x_min < 0 and self.x_max >= 0:
+            return [Cube(self.x_min,-1,self.y_min,self.y_max,self.z_min,self.z_max,self.on,self.addition_order),
+            Cube(0,self.x_max,self.y_min,self.y_max,self.z_min,self.z_max,self.on,self.addition_order)]
+
+        if self.y_min < 0 and self.y_max >= 0:
+            return [Cube(self.x_min,self.x_max,self.y_min,-1,self.z_min,self.z_max,self.on,self.addition_order),
+            Cube(self.x_min,self.x_max,0,self.y_max,self.z_min,self.z_max,self.on,self.addition_order)]
+
+        if self.z_min < 0 and self.z_max >= 0:
+            return [Cube(self.x_min,self.x_max,self.y_min,self.y_max,self.z_min,-1,self.on,self.addition_order),
+            Cube(self.x_min,self.x_max,self.y_min,self.y_max,0,self.z_max,self.on,self.addition_order)]
+
+        return [self]
+
 # TODO: what happens when the overlap is just a single plane (ie only area and no volume?)
 
 def get_octadran_ids(cube):
     ids = []
-    if cube.x_min <= 0 and cube.y_min <= 0 and cube.z_min <= 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min < 0:
         ids.append(0)
-    if cube.x_min <= 0 and cube.y_min <= 0 and cube.z_min > 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min > 0:
         ids.append(1)
-    if cube.x_min <= 0 and cube.y_min > 0 and cube.z_min <= 0:
+    if cube.x_min < 0 and cube.y_min > 0 and cube.z_min < 0:
         ids.append(2)
-    if cube.x_min <= 0 and cube.y_min > 0 and cube.z_min > 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min < 0:
         ids.append(3)
-    if cube.x_min > 0 and cube.y_min <= 0 and cube.z_min <= 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min < 0:
         ids.append(4)
-    if cube.x_min > 0 and cube.y_min <= 0 and cube.z_min > 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min < 0:
         ids.append(5)
-    if cube.x_min > 0 and cube.y_min > 0 and cube.z_min <= 0:
+    if cube.x_min < 0 and cube.y_min < 0 and cube.z_min < 0:
         ids.append(6)
     if cube.x_min > 0 and cube.y_min > 0 and cube.z_min > 0:
         ids.append(7)
     
     return ids
     
+
 
 i = 0
 i_max = len(input)
@@ -195,6 +212,19 @@ for line in input:
         on = False
 
     new_cubes = [Cube(x_min, x_max, y_min, y_max, z_min, z_max, on, i)]
+    prev_len = len(new_cubes)
+    new_len = prev_len
+    while True:
+        splitup_new_cubes = []
+        for c in new_cubes:
+            splitup_new_cubes.extend(c.split_cube_across_borders())
+        new_cubes = copy.deepcopy(splitup_new_cubes)
+        new_len = len(new_cubes)
+        if new_len == prev_len:
+            break
+        else:
+            prev_len = new_len 
+
     # AIM: cubes only contains cubes with no overlap!
     # 0: x <= 0, y <= 0, z <= 0
     # BINARY
@@ -206,6 +236,14 @@ for line in input:
         octadrans[id] = []
     cubes = list(cubes)
     """
+    cube_volumes = 0
+    for tt in cubes:
+        cube_volumes += tt.get_volume()    # 225476 supposed to be after 1.0, 293390 in the end (currently 295214, 1824 too many)
+                                    # 67914 unique ons, new cube 71550 area, thus 3636 overlap
+    new_cubes_volume = 0
+    for tt in new_cubes:
+        new_cubes_volume += tt.get_volume() 
+
     no_additional_checking_needed = []
     while len(new_cubes) > 0:
         new_cube = new_cubes[-1]
@@ -240,18 +278,18 @@ for line in input:
                 new_cubes.remove(new_cube)
                 new_cubes.extend(part_cubes_2)
 
-                temp = 0
-                temp2 = 0
-                temp3 = 0
-                temp4 = 0
+                confirmed_unoverlapping_volume = 0
+                new_cubes_volume2 = 0
+                cubes_volume2 = 0
+                part_cubes2_volume = 0
                 for tt in no_additional_checking_needed:
-                    temp += tt.get_volume()
+                    confirmed_unoverlapping_volume += tt.get_volume()
                 for tt in new_cubes:
-                    temp2 += tt.get_volume()
+                    new_cubes_volume2 += tt.get_volume()
                 for tt in cubes:
-                    temp3 += tt.get_volume()
+                    cubes_volume2 += tt.get_volume()
                 for tt in part_cubes_2:
-                    temp4 += tt.get_volume()
+                    part_cubes2_volume += tt.get_volume()
                 break
         
         if same_cube:
@@ -303,4 +341,10 @@ for cube in cubes:
 
 print(n_on)
 print(retired_algo(input))
+"""
+for i in range(len(cubes)):
+    if cubes[i].get_volume() <= 1824:
+        print(f'{i}:{cubes[i].get_volume()}')
 
+x = 5
+"""
