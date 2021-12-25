@@ -49,26 +49,20 @@ class Cube():
         return self.volume
 
     def get_overlapping_cube(self, other_cube):
-        # TODO: maybe just less than on the comparison?, border cases never happen
+        # STRICTLY SMALLER THAN! (CHECKED!)
         x_end = min(self.x_max, other_cube.x_max)
         x_beginning = max(self.x_min, other_cube.x_min)
-        if x_end == x_beginning:
-            x = 5
-        if x_end <= x_beginning:
+        if x_end < x_beginning:
             return None
         
         y_end = min(self.y_max, other_cube.y_max)
         y_beginning = max(self.y_min, other_cube.y_min)
-        if y_end == y_beginning:
-            x = 5
-        if y_end <= y_beginning:
+        if y_end < y_beginning:
             return None
 
         z_end = min(self.z_max, other_cube.z_max)
         z_beginning = max(self.z_min, other_cube.z_min)
-        if z_end == z_beginning:
-            x = 5
-        if z_end <= z_beginning:
+        if z_end < z_beginning:
             return None
 
         biggest_addition_order = max(self.addition_order,other_cube.addition_order)
