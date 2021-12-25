@@ -49,19 +49,25 @@ class Cube():
         return self.volume
 
     def get_overlapping_cube(self, other_cube):
-        # TODO: maybe just less than on the comparison?
+        # TODO: maybe just less than on the comparison?, border cases never happen
         x_end = min(self.x_max, other_cube.x_max)
         x_beginning = max(self.x_min, other_cube.x_min)
+        if x_end == x_beginning:
+            x = 5
         if x_end <= x_beginning:
             return None
         
         y_end = min(self.y_max, other_cube.y_max)
         y_beginning = max(self.y_min, other_cube.y_min)
+        if y_end == y_beginning:
+            x = 5
         if y_end <= y_beginning:
             return None
-        
+
         z_end = min(self.z_max, other_cube.z_max)
         z_beginning = max(self.z_min, other_cube.z_min)
+        if z_end == z_beginning:
+            x = 5
         if z_end <= z_beginning:
             return None
 
@@ -74,6 +80,8 @@ class Cube():
         return Cube(x_beginning, x_end, y_beginning, y_end, z_beginning, z_end, state, biggest_addition_order)
 
     def equal_to(self, other_cube):
+        if self.get_volume() != other_cube.get_volume():
+            return False
         if self.x_min != other_cube.x_min or self.x_max != other_cube.x_max:
             return False
         if self.y_min != other_cube.y_min or self.y_max != other_cube.y_max:
@@ -211,13 +219,14 @@ for line in input:
             new_cubes.remove(new_cube)
             continue
         has_overlaps = False
+        same_cube = False
         for cube in cubes:
+            if new_cube.equal_to(cube):
+                same_cube = True
+                break
             overlapping_cube = cube.get_overlapping_cube(new_cube)
             if overlapping_cube is not None:
-                same_cube = new_cube.equal_to(overlapping_cube)
                 has_overlaps = True
-            if overlapping_cube is not None and not same_cube:
-                # break all the cubes into smaller cubes and readd them
                 part_cubes_1 = cube.subtract_cube(overlapping_cube)
                 part_cubes_2 = new_cube.subtract_cube(overlapping_cube)
 
@@ -230,10 +239,8 @@ for line in input:
                 assert delta_volume == 0
 
                 cubes.remove(cube)
-                #cubes.extend(part_cubes_1)
                 no_additional_checking_needed.extend(part_cubes_1)
                 if overlapping_cube.on:
-                    #cubes.append(overlapping_cube)
                     no_additional_checking_needed.append(overlapping_cube)
 
                 new_cubes.remove(new_cube)
@@ -242,38 +249,35 @@ for line in input:
                 temp = 0
                 temp2 = 0
                 temp3 = 0
+                temp4 = 0
                 for tt in no_additional_checking_needed:
                     temp += tt.get_volume()
                 for tt in new_cubes:
                     temp2 += tt.get_volume()
                 for tt in cubes:
                     temp3 += tt.get_volume()
-
-
+                for tt in part_cubes_2:
+                    temp4 += tt.get_volume()
                 break
-                #new_cubes.extend(part_cubes_1)
-                #new_cubes.append(overlapping_cube)
-            elif overlapping_cube is not None and same_cube:
-                # same cube, just update its state
-                if new_cube.addition_order > cube.addition_order:
-                    # TODO: only larger than instead of equal?
-                    cube.on = new_cube.on
-                    cube.addition_order = new_cube.addition_order
-                new_cubes.remove(new_cube)
-                break
-            
-        if not has_overlaps:
+        
+        if same_cube:
+            # same cube, just update its state
+            if new_cube.addition_order > cube.addition_order:
+                # TODO: only larger than instead of equal?
+                cube.on = new_cube.on
+                cube.addition_order = new_cube.addition_order
+            new_cubes.remove(new_cube)  
+        elif not has_overlaps:
             # new_cube had no overlaps, add it
             new_cubes.remove(new_cube)
             if new_cube.on:
-                # only add if it is on
-                #cubes.append(new_cube)
                 no_additional_checking_needed.append(new_cube)
             else:
                 x = 5
 
 
     cubes.extend(no_additional_checking_needed)
+    
     """
     for cube in cubes:
         cube_ids = get_octadran_ids(cube)
