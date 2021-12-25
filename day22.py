@@ -16,7 +16,6 @@ class Cube():
         self.z_min = z_min
         self.z_max = z_max
         self.on = on
-        self.volume = self.get_volume()
         self.addition_order = addition_order
 
     def get_volume(self):
@@ -48,9 +47,6 @@ class Cube():
         return Cube(x_beginning, x_end, y_beginning, y_end, z_beginning, z_end, state, biggest_addition_order)
 
     def equal_to(self, other_cube):
-        if self.volume != other_cube.volume:
-            return False
-
         if self.x_min != other_cube.x_min or self.x_max != other_cube.x_max:
             return False
             
@@ -90,11 +86,11 @@ class Cube():
                         
                     cubes.append(Cube(x_pair[0],x_pair[1],y_pair[0],y_pair[1],z_pair[0],z_pair[1],self.on,self.addition_order))
 
-        total_volume = overlapping_cube.volume
+        total_volume = overlapping_cube.get_volume()
         for cube in cubes:
-            total_volume += cube.volume
+            total_volume += cube.get_volume()
 
-        assert total_volume == self.volume
+        assert total_volume == self.get_volume()
 
         return cubes
 
@@ -152,69 +148,83 @@ for line in input:
         octadrans[id] = []
 
     cubes = list(cubes)
-    while True:
-        restart_while = False
-        for new_cube in new_cubes:
-            has_overlaps = False
-            for cube in cubes:
-                overlapping_cube = cube.get_overlapping_cube(new_cube)
-                if overlapping_cube is not None:
-                    same_cube = new_cube.equal_to(overlapping_cube)
-                    has_overlaps = True
-                if overlapping_cube is not None and not same_cube:
-                    # break all the cubes into smaller cubes and readd them
-                    part_cubes_1 = cube.subtract_cube(overlapping_cube)
-                    part_cubes_2 = new_cube.subtract_cube(overlapping_cube)
+    no_additional_checking_needed = []
+    while len(new_cubes) > 0:
+        # TODO: no point of a for loop for new cubes since there is an outer while loop,
+        # just index new_cubes[0]
+        new_cube = new_cubes[-1]
+        has_overlaps = False
+        for cube in cubes:
+            overlapping_cube = cube.get_overlapping_cube(new_cube)
+            if overlapping_cube is not None:
+                same_cube = new_cube.equal_to(overlapping_cube)
+                has_overlaps = True
+            if overlapping_cube is not None and not same_cube:
+                # break all the cubes into smaller cubes and readd them
+                part_cubes_1 = cube.subtract_cube(overlapping_cube)
+                part_cubes_2 = new_cube.subtract_cube(overlapping_cube)
 
-                    delta_volume = 2*overlapping_cube.volume
-                    for part_cube_1 in part_cubes_1:
-                        delta_volume += part_cube_1.volume
-                    for part_cube_2 in part_cubes_2:
-                        delta_volume += part_cube_2.volume
-                    delta_volume -= (cube.volume + new_cube.volume)
-                    assert delta_volume == 0
+                delta_volume = 2*overlapping_cube.get_volume()
+                for part_cube_1 in part_cubes_1:
+                    delta_volume += part_cube_1.get_volume()
+                for part_cube_2 in part_cubes_2:
+                    delta_volume += part_cube_2.get_volume()
+                delta_volume -= (cube.get_volume() + new_cube.get_volume())
+                assert delta_volume == 0
 
-                    cubes.remove(cube)
-                    cubes.extend(part_cubes_1)
-                    if overlapping_cube.on:
-                        cubes.append(overlapping_cube)
+                cubes.remove(cube)
+                #cubes.extend(part_cubes_1)
+                no_additional_checking_needed.extend(part_cubes_1)
+                if overlapping_cube.on:
+                    #cubes.append(overlapping_cube)
+                    no_additional_checking_needed.append(overlapping_cube)
 
-                    new_cubes.remove(new_cube)
-                    new_cubes.extend(part_cubes_2)
-                    restart_while = True
-                    break
-                    #new_cubes.extend(part_cubes_1)
-                    #new_cubes.append(overlapping_cube)
-                elif overlapping_cube is not None and same_cube:
-                    # same cube, just update its state
-                    if not new_cube.on and new_cube.addition_order > cube.addition_order:
-                        cube.on = False
-                    new_cubes.remove(new_cube)
-                    restart_while = True
-                    break
-            
-            if not has_overlaps:
-                # new_cube had no overlaps, add it
                 new_cubes.remove(new_cube)
-                if new_cube.on:
-                    # only add if it is on
-                    cubes.append(new_cube)
-                else:
-                    x = 5
-                restart_while = True
+                new_cubes.extend(part_cubes_2)
                 break
-            if restart_while:
+                #new_cubes.extend(part_cubes_1)
+                #new_cubes.append(overlapping_cube)
+            elif overlapping_cube is not None and same_cube:
+                # same cube, just update its state
+                if new_cube.addition_order > cube.addition_order:
+                    # TODO: only larger than instead of equal?
+                    cube.on = new_cube.on
+                    cube.addition_order = new_cube.addition_order
+                new_cubes.remove(new_cube)
                 break
-        if restart_while:
-            continue
-        else:
+            
+        if not has_overlaps:
+            # new_cube had no overlaps, add it
+            new_cubes.remove(new_cube)
+            if new_cube.on:
+                # only add if it is on
+                #cubes.append(new_cube)
+                no_additional_checking_needed.append(new_cube)
+            else:
+                x = 5
             break
 
     for cube in cubes:
         cube_ids = get_octadran_ids(cube)
         for id in cube_ids:
+            assert cube.on
+            octadrans[id].append(cube)
+
+    for cube in no_additional_checking_needed:
+        cube_ids = get_octadran_ids(cube)
+        for id in cube_ids:
+            assert cube.on
             octadrans[id].append(cube)
 
 
-x = 5   
+final_cubes = set()
+for i in range(len(octadrans)):
+    final_cubes.update(octadrans[i])
+
+n_on = 0
+for cube in final_cubes:
+    assert cube.on
+    n_on += cube.get_volume()
+
+print(n_on)
 
