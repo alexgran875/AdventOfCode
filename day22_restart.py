@@ -69,8 +69,6 @@ class Floor():
         if tuple(og_rect) == tuple(overlap):
             return []
         new_rectangles = []
-        # I ALREADY KNOW THAT THE OVERLAPPING RECTANGLE IS COMPLETELY WITHIN, 
-        # I DON'T NEED TO DO THOSE COMPLICATED CHECKS!
         x_pairings = [(og_rect[0],overlap[0]-1),
                 (overlap[0],overlap[1]),
                 (overlap[1]+1,og_rect[1])]
@@ -149,5 +147,5 @@ n_on = 0
 for z in floors.keys():
     n_on += floors[z].get_n_on() 
 
-print(f'Current: {n_on}')
+print(f'Current: {n_on}') # 1325473814582641
 

@@ -4,20 +4,12 @@ import math
 with open('input.txt') as f:
     input = f.readlines()
 
-def exe_ins(input_digs,n_to_inspect):
+def is_valid(input_digs):
     variables = {'w':0,'x':0,'y':0,'z':0}
-    valid_inputs = []
     inp_id = -1
     for line in input:
         if line.count("inp"):
-            if inp_id >= 0:
-                if variables['z'] == 0:
-                    valid_inputs.append(True)
-                else:
-                    valid_inputs.append(False)
             inp_id += 1
-            if inp_id == n_to_inspect:
-                return valid_inputs
             var_arg = line.split()[-1]
             variables[var_arg] = input_digs[inp_id]
             continue
@@ -38,10 +30,10 @@ def exe_ins(input_digs,n_to_inspect):
             # TODO: not sure about truncuation = round down
             if arg2 in variables:
                 assert variables[arg2] != 0
-                variables[var_arg] = int(math.floor(variables[var_arg]/variables[arg2]))
+                variables[var_arg] = int(variables[var_arg]/variables[arg2])
             else:
                 assert int(arg2) != 0
-                variables[var_arg] = int(math.floor(variables[var_arg]/int(arg2)))
+                variables[var_arg] = int(variables[var_arg]/int(arg2))
         if line.count("mod"):
             assert variables[var_arg] >= 0
             if arg2 in variables:
@@ -62,26 +54,32 @@ def exe_ins(input_digs,n_to_inspect):
                 else:
                     variables[var_arg] = 0
     if variables['z'] == 0:
-        valid_inputs.append(True)
+        return True
     else:
-        valid_inputs.append(False)
-    return valid_inputs
+        return False
 
-def find_highest_valid(input_digs_before,input_position):
-    current_highest = 0
-    in_dig_before = copy.deepcopy(input_digs_before)
-    in_dig_before.append(1)
-    for i in range(1,10):
-        in_dig_before[-1] = i
-        rv = exe_ins(in_dig_before,input_position+1)
-        last_valid = rv[-1]
-        if last_valid and i > current_highest:
-            current_highest = i
-    in_dig_before[-1] = current_highest
-    return in_dig_before
-    
+def find_highest_valid():
+    input_digs = []
+    for a in range(9,0,-1):
+        for b in range(9,0,-1):
+            for c in range(9,0,-1):
+                print(input_digs)
+                for d in range(9,0,-1):
+                    for e in range(9,0,-1):
+                        for f in range(9,0,-1):
+                            for g in range(9,0,-1):
+                                for h in range(9,0,-1):
+                                    for i in range(9,0,-1):
+                                        for j in range(9,0,-1):
+                                            for k in range(9,0,-1):
+                                                for l in range(9,0,-1):
+                                                    for m in range(9,0,-1):
+                                                        for n in range(9,0,-1):
+                                                            input_digs = [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
+                                                            valid = is_valid(input_digs)
+                                                            if valid:
+                                                                return input_digs
 
-model_number = []
-for i in range(14):
-    model_number = find_highest_valid(model_number,i)
+model_number = find_highest_valid()
+print(model_number)
 
