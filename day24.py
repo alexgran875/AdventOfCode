@@ -14,6 +14,18 @@ for line in input:
 def exe_ins(arg_variables, ins_id):
     # set w in variables directly to the input var (inp w)
     variables = copy.deepcopy(arg_variables)
+
+    if ins_id == 0:
+        variables['y'] = variables['w'] + 12
+        variables['z'] = variables['y']
+        variables['x'] = 1
+        return variables
+    if ins_id == 1:
+        variables['y'] = variables['w'] + 7
+        variables['z'] = variables['z']*26 + variables['y']
+        variables['x'] = 1
+        return variables
+
     for line in instructions[ins_id]:
         var_arg = line.split()[1]
         arg2 = line.split()[2]
