@@ -25,6 +25,171 @@ def exe_ins(arg_variables, ins_id):
         variables['z'] = variables['z']*26 + variables['y']
         variables['x'] = 1
         return variables
+    if ins_id == 13:
+        variables['y'] = variables['w'] + 13
+        variables['x'] = 1
+        variables['z'] = int(variables['z']/26)*26 + variables['y']
+        return variables
+    if ins_id == 12:
+        variables['x'] = (variables['z'] % 26) - 4
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + 4)*variables['x']
+        
+        variables['z'] = variables['y'] + int(variables['z']/26)*(25*variables['x'] + 1)
+        return variables
+    if ins_id == 11:
+        add_x = -1
+        add_y = 9
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/26) * (25*variables['x'] + 1) + variables['y']
+        return variables
+    if ins_id == 10:
+        add_x = -8
+        add_y = 3
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/26) * (25*variables['x'] + 1) + variables['y']
+        return variables
+    if ins_id == 9:
+        add_x = 13
+        add_y = 13
+        div_z = 1
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables
+    if ins_id == 8:
+        div_z = 26
+        add_x = -13
+        add_y = 3
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables
+    if ins_id == 7:
+        div_z = 26
+        add_x = -11
+        add_y = 13
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables
+    if ins_id == 6:
+        div_z = 1
+        add_x = 10
+        add_y = 8
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables 
+    if ins_id == 5:
+        div_z = 26
+        add_x = -16
+        add_y = 12
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables 
+    if ins_id == 4:
+        div_z = 1
+        add_x = 11
+        add_y = 15
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables 
+    if ins_id == 3:
+        div_z = 1
+        add_x = 12
+        add_y = 8
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables 
+    if ins_id == 2:
+        div_z = 1
+        add_x = 10
+        add_y = 8
+        variables['x'] = (variables['z'] % 26) + add_x
+        if variables['x'] == variables['w']:
+            variables['x'] = 1
+        else:
+            variables['x'] = 0
+        variables['x'] = 1 - variables['x']
+
+        variables['y'] = (variables['w'] + add_y)*variables['x']
+        
+        variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
+        return variables 
 
     for line in instructions[ins_id]:
         var_arg = line.split()[1]
@@ -34,11 +199,13 @@ def exe_ins(arg_variables, ins_id):
                 variables[var_arg] += variables[arg2]
             else:
                 variables[var_arg] += int(arg2)
+            continue
         if line.count("mul"):
             if arg2 in variables:
                 variables[var_arg] *= variables[arg2]
             else:
                 variables[var_arg] *= int(arg2)
+            continue
         if line.count("div"):
             if arg2 in variables:
                 assert variables[arg2] != 0
@@ -46,6 +213,7 @@ def exe_ins(arg_variables, ins_id):
             else:
                 assert int(arg2) != 0
                 variables[var_arg] = int(variables[var_arg]/int(arg2))
+            continue
         if line.count("mod"):
             assert variables[var_arg] >= 0
             if arg2 in variables:
@@ -54,6 +222,7 @@ def exe_ins(arg_variables, ins_id):
             else:
                 assert int(arg2) > 0
                 variables[var_arg] = variables[var_arg] % int(arg2)
+            continue
         if line.count("eql"):
             if arg2 in variables:
                 if variables[var_arg] == variables[arg2]:
@@ -65,6 +234,7 @@ def exe_ins(arg_variables, ins_id):
                     variables[var_arg] = 1
                 else:
                     variables[var_arg] = 0
+            continue
     return variables
 
 def find_highest_valid():
@@ -90,8 +260,8 @@ def find_highest_valid():
                             for g in range(9,0,-1):
                                 f_variables['w'] = g
                                 g_variables = exe_ins(f_variables,6)
-                                print([a,b,c,d,e,f,g,-1,-1,-1,-1,-1,-1,-1])
                                 for h in range(9,0,-1):
+                                    print([a,b,c,d,e,f,g,h,-1,-1,-1,-1,-1,-1])
                                     g_variables['w'] = h
                                     h_variables = exe_ins(g_variables,7)
                                     for i in range(9,0,-1):
