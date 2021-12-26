@@ -191,50 +191,6 @@ def exe_ins(arg_variables, ins_id):
         variables['z'] = int(variables['z']/div_z) * (25*variables['x'] + 1) + variables['y']
         return variables 
 
-    for line in instructions[ins_id]:
-        var_arg = line.split()[1]
-        arg2 = line.split()[2]
-        if line.count("add"):
-            if arg2 in variables:
-                variables[var_arg] += variables[arg2]
-            else:
-                variables[var_arg] += int(arg2)
-            continue
-        if line.count("mul"):
-            if arg2 in variables:
-                variables[var_arg] *= variables[arg2]
-            else:
-                variables[var_arg] *= int(arg2)
-            continue
-        if line.count("div"):
-            if arg2 in variables:
-                assert variables[arg2] != 0
-                variables[var_arg] = int(variables[var_arg]/variables[arg2])
-            else:
-                assert int(arg2) != 0
-                variables[var_arg] = int(variables[var_arg]/int(arg2))
-            continue
-        if line.count("mod"):
-            assert variables[var_arg] >= 0
-            if arg2 in variables:
-                assert variables[arg2] > 0
-                variables[var_arg] = variables[var_arg] % variables[arg2]
-            else:
-                assert int(arg2) > 0
-                variables[var_arg] = variables[var_arg] % int(arg2)
-            continue
-        if line.count("eql"):
-            if arg2 in variables:
-                if variables[var_arg] == variables[arg2]:
-                    variables[var_arg] = 1
-                else:
-                    variables[var_arg] = 0
-            else:
-                if variables[var_arg] == int(arg2):
-                    variables[var_arg] = 1
-                else:
-                    variables[var_arg] = 0
-            continue
     return variables
 
 def find_highest_valid():
@@ -280,10 +236,145 @@ def find_highest_valid():
                                                         l_variables['w'] = m
                                                         m_variables = exe_ins(l_variables,12)
                                                         for n in range(9,0,-1):
+                                                            # will z decrease up to 8
                                                             m_variables['w'] = n
                                                             n_variables = exe_ins(m_variables,13)
                                                             if n_variables['z'] == 0:
                                                                 return [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
 
-print(find_highest_valid())
+def is_valid(model_num):
+    # 0
+    w = model_num[0]
+    z = w + 12
+    # 1
+    w = model_num[1]
+    z = z*26 + w + 7
+    # 2
+    w = model_num[2]
+    x = (z % 26) + 10
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = z * (25*x + 1) + (w + 8)*x
+    # 3
+    w = model_num[3]
+    x = (z % 26) + 12
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = z * (25*x + 1) + (w + 8)*x
+    # 4
+    w = model_num[4]
+    x = (z % 26) + 11
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = z * (25*x + 1) + (w + 15)*x
+    # 5
+    w = model_num[5]
+    x = (z % 26) - 16
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = int(z/26) * (25*x + 1) + (w + 12)*x
+    # 6
+    w = model_num[6]
+    x = (z % 26) + 10
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = z * (25*x + 1) + (w + 8)*x
+    # 7
+    w = model_num[7]
+    x = (z % 26) - 11
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = int(z/26) * (25*x + 1) + (w + 13)*x
+    # 8
+    w = model_num[8]
+    x = (z % 26) - 13
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z= int(z/26) * (25*x + 1) + (w + 3)*x
+    # 9
+    w = model_num[9]
+    x = (z % 26) + 13
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = z * (25*x + 1) + (w + 13)*x
+    # 10
+    w = model_num[10]
+    x = (z % 26) - 8
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = int(z/26) * (25*x + 1) + (w + 3)*x
+    # 11
+    w = model_num[11]
+    x = (z % 26) + -1
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = int(z/26) * (25*x + 1) + (w + 9)*x
+    # 12
+    w = model_num[12]
+    x = z % 26 - 4
+    if x == w:
+        x = 1
+    else:
+        x = 0
+    x = 1 - x
+    z = (w + 4)*x + int(z/26)*(25*x + 1)
+    # 13
+    w = model_num[13]
+    z = int(z/26)*26 + w + 13
+    if z == 0:
+        return True
+    else:
+        return False
+
+def find_highest_valid2():
+    for a in range(9,0,-1):
+        for b in range(9,0,-1):
+            for c in range(9,0,-1):
+                for d in range(9,0,-1):
+                    for e in range(9,0,-1):
+                        for f in range(9,0,-1):
+                            for g in range(9,0,-1):
+                                for h in range(9,0,-1):
+                                    print([a,b,c,d,e,f,g,h,-1,-1,-1,-1,-1,-1])
+                                    for i in range(9,0,-1):
+                                        for j in range(9,0,-1):
+                                            for k in range(9,0,-1):
+                                                for l in range(9,0,-1):
+                                                    for m in range(9,0,-1):
+                                                        for n in range(9,0,-1):
+                                                            model_number = [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
+                                                            if is_valid(model_number):
+                                                                return [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
+
+print(find_highest_valid2())
 
