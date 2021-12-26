@@ -242,19 +242,16 @@ def find_highest_valid():
                                                             if n_variables['z'] == 0:
                                                                 return [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
 
+
+# TODO: probably restart but do it more carefully with verification
 def is_valid(model_num):
     z = ((((model_num[0] + 12)*26 + model_num[1] + 7) * (26) + (model_num[2] + 8)) * (26) + (model_num[3] + 8)) * (26) + (model_num[4] + 15)
-    # 5
-    w = model_num[5]
-    x = (z % 26) - 16
-    if x == w:
-        x = 0
-    else:
-        x = 1
-    z = (int(z/26) * (25*x + 1) + (w + 12)*x) * (26) + (model_num[6] + 8)
+    if z > 9000000:
+        return False
+    z = (int(z/26) * (26) + (model_num[5] + 12)) * (26) + (model_num[6] + 8)
     # 7
     w = model_num[7]
-    x = (z % 26) - 11
+    x = (model_num[6] + 8) % 26 - 11
     if x == w:
         x = 0
     else:
