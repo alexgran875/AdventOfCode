@@ -243,114 +243,57 @@ def find_highest_valid():
                                                                 return [a,b,c,d,e,f,g,h,i,j,k,l,m,n]
 
 def is_valid(model_num):
-    # 0
-    w = model_num[0]
-    z = w + 12
-    # 1
-    w = model_num[1]
-    z = z*26 + w + 7
-    # 2
-    w = model_num[2]
-    x = (z % 26) + 10
-    if x == w:
-        x = 1
-    else:
-        x = 0
-    x = 1 - x
-    z = z * (25*x + 1) + (w + 8)*x
-    # 3
-    w = model_num[3]
-    x = (z % 26) + 12
-    if x == w:
-        x = 1
-    else:
-        x = 0
-    x = 1 - x
-    z = z * (25*x + 1) + (w + 8)*x
-    # 4
-    w = model_num[4]
-    x = (z % 26) + 11
-    if x == w:
-        x = 1
-    else:
-        x = 0
-    x = 1 - x
-    z = z * (25*x + 1) + (w + 15)*x
+    z = ((((model_num[0] + 12)*26 + model_num[1] + 7) * (26) + (model_num[2] + 8)) * (26) + (model_num[3] + 8)) * (26) + (model_num[4] + 15)
     # 5
     w = model_num[5]
     x = (z % 26) - 16
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
-    z = int(z/26) * (25*x + 1) + (w + 12)*x
-    # 6
-    w = model_num[6]
-    x = (z % 26) + 10
-    if x == w:
-        x = 1
     else:
-        x = 0
-    x = 1 - x
-    z = z * (25*x + 1) + (w + 8)*x
+        x = 1
+    z = (int(z/26) * (25*x + 1) + (w + 12)*x) * (26) + (model_num[6] + 8)
     # 7
     w = model_num[7]
     x = (z % 26) - 11
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
+    else:
+        x = 1
     z = int(z/26) * (25*x + 1) + (w + 13)*x
     # 8
     w = model_num[8]
     x = (z % 26) - 13
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
-    z= int(z/26) * (25*x + 1) + (w + 3)*x
-    # 9
-    w = model_num[9]
-    x = (z % 26) + 13
-    if x == w:
-        x = 1
     else:
-        x = 0
-    x = 1 - x
-    z = z * (25*x + 1) + (w + 13)*x
+        x = 1
+    z = (int(z/26) * (25*x + 1) + (w + 3)*x) * (26) + (model_num[9] + 13)
     # 10
     w = model_num[10]
     x = (z % 26) - 8
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
+    else:
+        x = 1
     z = int(z/26) * (25*x + 1) + (w + 3)*x
     # 11
     w = model_num[11]
-    x = (z % 26) + -1
+    x = (z % 26) - 1
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
+    else:
+        x = 1
     z = int(z/26) * (25*x + 1) + (w + 9)*x
     # 12
     w = model_num[12]
     x = z % 26 - 4
     if x == w:
-        x = 1
-    else:
         x = 0
-    x = 1 - x
+    else:
+        x = 1
     z = (w + 4)*x + int(z/26)*(25*x + 1)
     # 13
-    w = model_num[13]
-    z = int(z/26)*26 + w + 13
+    z = int(z/26)*26 + model_num[13] + 13
     if z == 0:
         return True
     else:
