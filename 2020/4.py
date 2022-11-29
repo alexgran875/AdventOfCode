@@ -27,7 +27,7 @@ for i, line in enumerate(data):
     if byr > 0 and byr_counted == 0:
         byr_counted += 1
         val = retils.get_digits(retils.get_after_group(line, 'byr:'))
-        if val < 1920 or val > 2002:
+        if (val.isdigit()) and (int(val) < 1920 or int(val) > 2002):
             byr = 0
 
     iyr += line.count('iyr:')
@@ -35,7 +35,7 @@ for i, line in enumerate(data):
     if iyr > 0 and iyr_counted == 0:
         iyr_counted += 1
         val = retils.get_digits(retils.get_after_group(line, 'iyr:'))
-        if val < 2010 or val > 2020:
+        if (val.isdigit()) and (int(val) < 2010 or int(val) > 2020):
             iyr = 0
 
     eyr += line.count('eyr:')
@@ -43,7 +43,7 @@ for i, line in enumerate(data):
     if eyr > 0 and eyr_counted == 0:
         eyr_counted += 1
         val = retils.get_digits(retils.get_after_group(line, 'eyr:'))
-        if val < 2020 or val > 2030:
+        if (val.isdigit()) and (int(val) < 2020 or int(val) > 2030):
             eyr = 0
     
     hgt += line.count('hgt:')
@@ -52,11 +52,11 @@ for i, line in enumerate(data):
         hgt_counted += 1
         val_cm = retils.get_between_groups(line, 'hgt:', 'cm')
         val_in = retils.get_between_groups(line, 'hgt:', 'in')
-        if val_cm != '' and val_cm.isdigit():
+        if val_cm.isdigit():
             val = int(val_cm)
             if val < 150 or val > 193:
                 hgt = 0
-        elif val_in != '' and val_in.isdigit():
+        elif val_in.isdigit():
             val = int(val_in)
             if val < 59 or val > 76:
                 hgt = 0

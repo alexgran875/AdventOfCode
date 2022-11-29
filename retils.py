@@ -1,5 +1,7 @@
 import re
 
+# getall=False returns a string or ''
+# getall=True returns a list of strings or []
 def handle_return(matches, getall):
     if getall:
         return matches
@@ -10,25 +12,22 @@ def handle_return(matches, getall):
             return matches[0]
 
 def get_between_groups(string, first_group, second_group, getall=False):
+    # lazy matching - will match as little as possible
+    # e.g. if there is a second occurrence of the second group, will only match up to its first occurrence 
     matches = re.findall(r'(?<=' + first_group + ')(.*?)(?=' + second_group + ')', string)
     return handle_return(matches, getall)
 
 def get_after_group(string, group, getall=False):
+    # up to a line break
     matches = re.findall(r'(?<=' + group + ')(.*)', string)
     return handle_return(matches, getall)
 
 def get_before_group(string, group, getall=False):
+    # up to a line break
     matches = re.findall(r'(.*)' + group, string)
     return handle_return(matches, getall)
 
-def get_digits(string, getall=False, getall_as_int=True):
+def get_digits(string, getall=False):
     matches = re.findall(r'\d+', string)
-    rv = handle_return(matches, getall)
-    if getall_as_int:
-        if getall:
-            rv = [int(x) for x in list(filter(lambda l: l.isdigit(), rv))]
-        else:
-            if rv.isdigit():
-                rv = int(rv)
-    return rv
+    return handle_return(matches, getall)
 
