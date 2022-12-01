@@ -36,3 +36,50 @@ def data_to_numpy(data, dtype = np.int64):
     new_data = list(map(list, new_data))
     new_data = np.array(new_data, dtype=dtype)
     return new_data
+
+def neighbour_matrix_looping(data_matrix = np.random.randint(0, 1, size=(10, 10))):
+    # copy paste if you need to loop over a matrix while also checking the neighbours
+    n_neighbours = 1
+    ignore_diagonals = False
+    ignore_self = True  # current cell
+    wrap_around_rows = True # True: will wrap around, otherwise edge cells will have less neighbours
+    wrap_around_cols = True 
+
+    for currentRowIndex in range(np.shape(data_matrix)[0]):
+        for currentColIndex in range(np.shape(data_matrix)[1]):
+            # start loop over neighbours
+            for rowOffset in range(-n_neighbours,1+n_neighbours):
+                for colOffset in range(-n_neighbours,1+n_neighbours):
+
+                    # diagonals
+                    if rowOffset != 0 and abs(rowOffset) == abs(colOffset):    
+                        if ignore_diagonals:
+                            continue
+
+                    # self (current sell)
+                    if rowOffset == 0 and colOffset == 0:
+                        if ignore_self:
+                            continue
+
+                    # wrap around rows
+                    if wrap_around_rows:
+                        neighbourRowIndex = (currentRowIndex + rowOffset) % np.shape(data_matrix)[0]
+                    else:
+                        neighbourRowIndex = currentRowIndex + rowOffset
+                        if neighbourRowIndex < 0 or neighbourRowIndex >= np.shape(data_matrix)[0]:
+                            continue
+
+                    # wrap around cols
+                    if wrap_around_cols:
+                        neighbourColIndex = (currentColIndex + colOffset) % np.shape(data_matrix)[1]
+                    else:
+                        neighbourColIndex = currentColIndex + colOffset
+                        if neighbourColIndex < 0 or neighbourColIndex >= np.shape(data_matrix)[1]:
+                            continue
+
+                    # compare current cell with neighbour
+                    neighbourValue = data_matrix[neighbourRowIndex, neighbourColIndex]
+                    currentValue = data_matrix[currentRowIndex, currentColIndex]
+                    bp_place = 5
+            # end loop over neighbours
+            bp_place = 5
