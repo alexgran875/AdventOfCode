@@ -1,12 +1,17 @@
+from aocd import get_data
 import numpy as np
 import copy 
 
 # data: list of lines
-def parse_data():
-    with open('input.txt') as f:
-        data = f.readlines()
-        data = list(map(lambda i:i.replace("\n",""), data))
-        return data
+def parse_data(day = None, year = None):
+    if day is None or year is None:
+        with open('input.txt') as f:
+            data = f.readlines()
+            data = list(map(lambda i:i.replace("\n",""), data))
+    else:
+        data = get_data(day=day, year=year)
+        data = data.split("\n")
+    return data
 
 def group_data(data, separator = "", include_separator = False):
     groups = []
