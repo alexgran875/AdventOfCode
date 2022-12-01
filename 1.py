@@ -1,15 +1,15 @@
-from utils import parse_data
+from utils import parse_data, group_data
 import numpy as np
 data = parse_data()
+groups = group_data(data)
 
 all_cals = []
-tmp = 0
-for line in data:
-    if line.isdigit():
-        tmp += int(line)
-    if line == "":
-        all_cals.append(tmp)
-        tmp = 0
+for group in groups:
+    tmp = 0
+    for line in group:
+        if line.isdigit():
+            tmp += int(line)
+    all_cals.append(tmp)
 
 all_cals = np.array(all_cals, dtype=np.int32)
 all_cals.sort()
