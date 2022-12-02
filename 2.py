@@ -12,6 +12,48 @@ groups = group_data(data)
 answer_a = None
 answer_b = None
 ### --- --- --- ###
+answer_a = 0
+answer_b = 0
+score_rock = 1
+score_paper = 2
+score_scissors = 3
+loss_score = 0
+win_score = 6
+draw_score = 3
+for line in data:
+
+    if line.count("A"): # rock
+        if line.count("Y"): # paper, need to draw
+            answer_a += win_score + score_paper
+            answer_b += draw_score + score_rock
+        elif line.count("Z"):   # scissors, need to win 
+            answer_a += loss_score + score_scissors
+            answer_b += win_score + score_paper
+        elif line.count("X"):   # rock, need to lose
+            answer_a += draw_score + score_rock
+            answer_b += loss_score + score_scissors
+
+    elif line.count("B"):    # paper
+        if line.count("Y"):
+            answer_a += draw_score + score_paper
+            answer_b += draw_score + score_paper
+        elif line.count("Z"):
+            answer_a += win_score + score_scissors
+            answer_b += win_score + score_scissors
+        elif line.count("X"):
+            answer_a += loss_score + score_rock
+            answer_b += loss_score + score_rock
+        
+    elif line.count("C"):   # scissors
+        if line.count("Y"):
+            answer_a += loss_score + score_paper
+            answer_b += draw_score + score_scissors
+        elif line.count("Z"):
+            answer_a += draw_score + score_scissors
+            answer_b += win_score + score_rock
+        elif line.count("X"):
+            answer_a += win_score + score_rock
+            answer_b += loss_score + score_paper
 
 
 
