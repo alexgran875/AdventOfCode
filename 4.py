@@ -3,8 +3,8 @@ from utils import parse_data, group_data_by_separator, group_data_by_size, data_
 from retils import get_between_groups, get_after_group, get_before_group, get_digits
 import numpy as np
 
-day = # TODO: change
-year = # TODO: change
+day = 4
+year = 2022
 
 read_online = True
 if read_online:

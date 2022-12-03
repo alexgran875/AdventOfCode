@@ -1,7 +1,7 @@
-from utils import parse_data, group_data
+from utils import parse_data, group_data_by_separator
 import numpy as np
 data = parse_data()
-groups = group_data(data)
+groups = group_data_by_separator(data)
 
 all_cals = []
 for group in groups:

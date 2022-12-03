@@ -1,5 +1,5 @@
 from aocd import submit
-from utils import parse_data, group_data, data_replace, data_to_numpy
+from utils import parse_data, group_data_by_separator, data_replace, data_to_numpy
 from retils import get_between_groups, get_after_group, get_before_group, get_digits
 import numpy as np
 
@@ -7,7 +7,7 @@ day = 5
 year = 2020
 
 data = parse_data(day, year)
-groups = group_data(data)
+groups = group_data_by_separator(data)
 
 answer_a = None
 answer_b = None

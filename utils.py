@@ -13,7 +13,7 @@ def parse_data(day = None, year = None):
         data = data.split("\n")
     return data
 
-def group_data(data, separator = "", include_separator = False):
+def group_data_by_separator(data, separator = "", include_separator = False):
     groups = []
     tmp = []
     for line in data:
@@ -26,6 +26,13 @@ def group_data(data, separator = "", include_separator = False):
             tmp.append(line)
     if tmp != []:
         groups.append(tmp)
+    return groups
+
+def group_data_by_size(data, size):
+    assert len(data) % size == 0
+    groups = []
+    for i in range(int(len(data)/size)):
+        groups.append(data[i*size:(i+1)*size])
     return groups
 
 def data_replace(data, replacements):
