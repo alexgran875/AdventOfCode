@@ -3,7 +3,7 @@ from utils import parse_data, group_data_by_separator, group_data_by_size, data_
 from retils import get_between_groups, get_after_group, get_before_group, get_digits
 import numpy as np
 
-day = 4
+day = 5
 year = 2022
 
 read_online = True
@@ -16,29 +16,10 @@ groups = group_data_by_separator(lines)
 answer_a = None
 answer_b = None
 ### --- --- --- ###
-fully_contained = []
-overlap = []
-for line in lines:
-    range1 = range(
-        int(line.split(",")[0].split("-")[0]),
-        int(line.split(",")[0].split("-")[1]) + 1
-    )
-    range1 = set(range1)
 
-    range2 = range(
-        int(line.split(",")[1].split("-")[0]), 
-        int(line.split(",")[1].split("-")[1]) + 1
-    )
-    range2 = set(range2)
 
-    if range1.issubset(range2) or range2.issubset(range1):
-        fully_contained.append(line)
 
-    if range1.intersection(range2) != set():
-        overlap.append(line)
 
-answer_a = len(fully_contained)
-answer_b = len(overlap)
 ### --- --- --- ###
 submit_a = False
 submit_b = False
