@@ -68,7 +68,7 @@ def neighbour_matrix_looping(data_matrix = np.random.randint(0, 1, size=(10, 10)
                         if ignore_diagonals:
                             continue
 
-                    # self (current sell)
+                    # self (current cell)
                     if rowOffset == 0 and colOffset == 0:
                         if ignore_self:
                             continue

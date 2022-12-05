@@ -13,19 +13,21 @@ def handle_return(matches, getall):
             return matches[0]
 
 def get_between_groups(string, first_group, second_group, getall=False):
-    # lazy matching - will match as little as possible
+    # NOTE: LAZY - will match as little as possible
     # e.g. if there is a second occurrence of the second group, will only match up to its first occurrence 
-    matches = re.findall(r'(?<=' + first_group + ')(.*?)(?=' + second_group + ')', string)
+    matches = re.findall(r'(?<=' + first_group + r')(.*?)(?=' + second_group + r')', string)
     return handle_return(matches, getall)
 
 def get_after_group(string, group, getall=False):
     # up to a line break
-    matches = re.findall(r'(?<=' + group + ')(.*)', string)
+    # NOTE: GREEDY
+    matches = re.findall(r'(?<=' + group + r')(.*)', string)
     return handle_return(matches, getall)
 
 def get_before_group(string, group, getall=False):
     # up to a line break
-    matches = re.findall(r'(.*)' + group, string)
+    # NOTE: LAZY
+    matches = re.findall(r'(.*?)' + group, string)
     return handle_return(matches, getall)
 
 def get_digits(string, getall=False):
