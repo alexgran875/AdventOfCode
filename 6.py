@@ -4,8 +4,8 @@ from retils import get_between_groups, get_after_group, get_before_group, get_di
 import numpy as np
 import copy
 
-day =  # TODO: change
-year =  # TODO: change
+day = 6
+year = 2022
 
 read_online = True
 if read_online:

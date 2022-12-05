@@ -2,6 +2,7 @@ import re
 
 # getall=False returns a string or ''
 # getall=True returns a list of strings or []
+# NOTE: IF YOU ARE MATCHING {([\^$|)*+?.} YOU MUST ESCAPE THEM WITH A BACKSLASH
 def handle_return(matches, getall):
     if getall:
         return matches
