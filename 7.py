@@ -22,22 +22,34 @@ answer_b = None
 ### --- --- --- ###
 
 
+class Directory():
+    def __init__(self):
+        self.contents = []
+
+    def get_size(self):
+        total_size = 0
+        for content in self.contents:
+            if type(content) == Directory:
+                total_size += content.get_size()
+            else:
+                total_size += content
+        return total_size
+
+    def add_content(self, content):
+        self.contents.append(content)
+
+
 def get_abs_path(curr_dir):
     return functools.reduce(lambda x, y: x + "/" + y, curr_dir)
 
 
 curr_dir = []
-ls_cmd = False
-dir_file_sizes = {}
-dir_path_depths = {}
+dirs_dict = {}
 for line in lines:
     if line == "$ cd /":
-        ls_cmd = False
         curr_dir.append("root")
-        dir_file_sizes["root"] = 0
-        dir_path_depths["root"] = 1
+        dirs_dict["root"] = Directory()
     elif line.count("$ cd"):
-        ls_cmd = False
         # NOTE: don't forget to escape special character $
         # also, only singular cds in the input (i.e. no cd abc/def/hij)
         cd_arg = get_after_group(line, "\$ cd ")
@@ -45,38 +57,27 @@ for line in lines:
             curr_dir.pop()
         else:
             curr_dir.append(cd_arg)
-    elif line.count("$ ls"):
-        ls_cmd = True
     elif line.count("dir "):
-        tmp_dir = copy.deepcopy(curr_dir)
-        tmp_dir.append(get_after_group(line, "dir "))
-        abs_path = get_abs_path(tmp_dir)
-        if abs_path not in dir_file_sizes.keys():
-            dir_file_sizes[abs_path] = 0
-            dir_path_depths[abs_path] = len(tmp_dir)
-    elif ls_cmd:
-        dir_file_sizes[get_abs_path(curr_dir)] += int(get_digits(line))
+        abs_path = get_abs_path(curr_dir) + "/" + get_after_group(line, "dir ")
+        if abs_path not in dirs_dict.keys():
+            new_dir = Directory()
+            parent_path = abs_path[:abs_path.rfind("/")]
+            dirs_dict[parent_path].add_content(new_dir)
+            dirs_dict[abs_path] = new_dir
+    elif line.count("$ ls") == 0:
+        size = int(line.split(" ")[0])
+        dirs_dict[get_abs_path(curr_dir)].add_content(size)
 
-sorted_dir_path_depths = {k: v for k, v in sorted(
-    dir_path_depths.items(), key=lambda item: item[1], reverse=True)}
-total_sizes = dict([(key, 0) for key in sorted_dir_path_depths])
-for abs_path in sorted_dir_path_depths:
-    total_sizes[abs_path] += dir_file_sizes[abs_path]
-    if abs_path != "root":
-        parent_path = abs_path[:abs_path.rfind("/")]
-        total_sizes[parent_path] += total_sizes[abs_path]
+sizes = [directory.get_size() for directory in dirs_dict.values()]
+sizes = sorted(sizes, reverse=True)
+answer_a = sum(filter(lambda x: x <= 100000, sizes))
 
-
-descending_sizes = sorted(list(total_sizes.values()), reverse=True)
-free_space = 70000000 - descending_sizes[0]
+free_space = 70000000 - dirs_dict["root"].get_size()
 space_to_free = 30000000 - free_space
-answer_a = 0
-for i, size in enumerate(descending_sizes):
-    if size <= 100000:
-        answer_a += size
+for i, size in enumerate(sizes):
     if size < space_to_free:
-        if answer_b is None:
-            answer_b = descending_sizes[i-1]
+        answer_b = sizes[i-1]
+        break
 
 ### --- --- --- ###
 submit_a = False
