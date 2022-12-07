@@ -5,8 +5,8 @@ import numpy as np
 import copy
 import functools
 
-day =  # TODO: change
-year =  # TODO: change
+day = 8
+year = 2022
 
 read_online = True
 if read_online:
