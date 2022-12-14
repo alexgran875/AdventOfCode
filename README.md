@@ -1,5 +1,7 @@
 Maybe the true Christmas was the bugs we found along the way?
 
+![alt text](https://github.com/alexeygorskiy/AdventOfCode/blob/main/anim_export/animation.gif)
+
 # Useful Things to Remember
 - When using RegEx, don't forget to escape special characters  
 - Sets are useful for finding intersections/overlaps as well as subsets  
