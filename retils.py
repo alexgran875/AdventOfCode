@@ -31,6 +31,6 @@ def get_before_group(string, group, getall=False):
     return handle_return(matches, getall)
 
 def get_digits(string, getall=False):
-    matches = re.findall(r'\d+', string)
+    matches = re.findall(r'-?\d+', string)
     return handle_return(matches, getall)
 
