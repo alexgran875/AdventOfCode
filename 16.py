@@ -44,8 +44,7 @@ for valve in non_zero_fr.keys():
         shortest_paths[valve][otherValve] = pathLength
 
 
-@functools.cache
-def traverse(path, arg_time_remaining=30):
+def traverse(path, arg_time_remaining):
     if len(path) > 1:
         travel_open_time = shortest_paths[path[0]][path[1]] + 1
         time_remaining = arg_time_remaining - travel_open_time
@@ -60,35 +59,70 @@ def traverse(path, arg_time_remaining=30):
         return (0, 0, arg_time_remaining)
 
 
-if not read_online:
-    assert traverse(("AA", "DD", "BB", "JJ", "HH",
-                    "EE", "CC")) == (1651, 81, 6)
+def get_max_pressure(start, valid_nodes, time_remaining):
+    valid_nodes = tuple(
+        filter(lambda l: shortest_paths[start][l[0]] + 1 < time_remaining, valid_nodes))
+    if len(valid_nodes) == 0:
+        return 0
+    optimistic_time_remaining = time_remaining - \
+        (min(shortest_paths[start].values()) + 1)
+    return (valid_nodes[0][1] * optimistic_time_remaining) + get_max_pressure(valid_nodes[0][0], valid_nodes[1:],
+                                                                              optimistic_time_remaining)
 
-best_pressure = 0
-dfs_paths = [(0, ("AA", ))]
 
 max_path_length = ceil(30 / (min(shortest_paths["AA"].values()) + 1)) + 1
-iteration = 0
-while len(dfs_paths) > 0:
-    if iteration % 100000 == 0:
-        print(f"[{iteration}] to explore: {len(dfs_paths)}")
-    iteration += 1
-    current_path = heapq.heappop(dfs_paths)[1]
-    pressure, flow_rate, time_remaining = traverse(current_path)
-    if pressure > best_pressure:
-        best_pressure = pressure
-        print(f"{best_pressure}: {current_path}")
-    current_node = current_path[-1]
-    for next_node in shortest_paths[current_node]:
-        if next_node in current_path:
+for initial_time_remaining in [30, 26]:
+    iteration = 0
+    best_pressure = 0
+    dfs_paths = [(0, ("AA", ))]
+    while len(dfs_paths) > 0:
+        if iteration % 100000 == 0:
+            print(f"[{iteration}] to explore: {len(dfs_paths)}")
+        iteration += 1
+        current_path = heapq.heappop(dfs_paths)[1]
+        pressure, flow_rate, time_remaining = traverse(
+            current_path[current_path.index("AA"):], initial_time_remaining)
+        if initial_time_remaining == 26:
+            pressure_ele, flow_rate_ele, time_remaining_ele = traverse(
+                current_path[:current_path.index("AA")+1][::-1], 26)
+            pressure += pressure_ele
+        if pressure > best_pressure:
+            best_pressure = pressure
+            if initial_time_remaining == 30:
+                answer_a = best_pressure
+            else:
+                answer_b = best_pressure
+            print(f"{best_pressure}: {current_path}")
+        current_node = current_path[-1]
+        current_ele_node = current_path[0]
+        sorted_fr = tuple(filter(lambda x: x[0] not in current_path, sorted(
+            non_zero_fr.items(), key=lambda x: x[1], reverse=True)))
+        possible_additional_pressure = get_max_pressure(
+            current_node, sorted_fr, time_remaining)
+        if initial_time_remaining == 26:
+            possible_additional_pressure += get_max_pressure(
+                current_ele_node, sorted_fr, time_remaining_ele)
+        if pressure + possible_additional_pressure < best_pressure:
             continue
-        if shortest_paths[current_node][next_node] + 1 >= time_remaining:
-            continue
-        new_path = current_path + (next_node, )
-        if len(new_path) <= max_path_length:
-            heapq.heappush(dfs_paths, (-len(new_path), new_path))
+        for next_node in shortest_paths[current_node]:
+            if next_node in current_path:
+                continue
+            new_path = current_path
+            if shortest_paths[current_node][next_node] + 1 < time_remaining:
+                new_path = current_path + (next_node, )
+                if initial_time_remaining == 30:
+                    heapq.heappush(dfs_paths, (-len(new_path), new_path))
 
-answer_a = best_pressure
+            if initial_time_remaining == 26:
+                for ele_node in shortest_paths[current_ele_node]:
+                    if ele_node in new_path:
+                        continue
+                    new_total_path = new_path
+                    if shortest_paths[current_ele_node][ele_node] + 1 < time_remaining_ele:
+                        new_total_path = (ele_node, ) + new_path
+                    if new_total_path != current_path:
+                        heapq.heappush(
+                            dfs_paths, (-len(new_total_path), new_total_path))
 ### --- --- --- ###
 submit_a = False
 submit_b = False
